@@ -59,7 +59,7 @@ func main() {
 	fmt.Println(scanner.Text())
 
 	// Build query for bulk insert
-	bulkQuery := "INSERT INTO piggybank.crypto_csv_raw_data (id, \"timestamp_UTC\") VALUES"
+	bulkQuery := "INSERT INTO piggybank.crypto_csv_raw_data (id, \"timestamp_UTC\", transaction_desc) VALUES"
 
 	for true {
 		ok := scanner.Scan()
@@ -70,7 +70,11 @@ func main() {
 			break
 		}
 		splitRow := strings.Split(scanner.Text(), ",")
-		bulkQuery += fmt.Sprintf(" ('%d', '%s'),", total, splitRow[0])
+		// descontruct the row into variables
+		id := total
+		timestamp := splitRow[0]
+		transactionDesc := splitRow[1]
+		bulkQuery += fmt.Sprintf(" ('%d', '%s', '%s'),", id, timestamp, transactionDesc)
 		total += 1
 		fmt.Println("Total lines:", total)
 	}
