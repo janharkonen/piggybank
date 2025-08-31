@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"database/sql"
+	"encoding/csv"
 	"fmt"
 	"os"
 	"strings"
@@ -30,7 +31,6 @@ func InitDbFromCsv(csvFilePath string) {
 		}
 		scanner := bufio.NewScanner(envFile)
 		for scanner.Scan() {
-			fmt.Println(scanner.Text())
 			if strings.HasPrefix(scanner.Text(), "postgresql://") {
 				postgresURI = scanner.Text()
 				continue
@@ -55,38 +55,41 @@ func InitDbFromCsv(csvFilePath string) {
 	}
 
 	total := 0
-	scanner := bufio.NewScanner(csvFile)
-	scanner.Scan()
-	fmt.Println(scanner.Text())
+	reader := csv.NewReader(csvFile)
+	reader.FieldsPerRecord = 11
+	header, err := reader.Read()
+	if err != nil {
+		fmt.Println("Error reading header:", err)
+		return
+	}
+	_ = header
 
 	// Build query for bulk insert
 	bulkQuery := "INSERT INTO piggybank.crypto_csv_raw_data (id, \"timestamp_UTC\", transaction_desc, currency, amount, to_currency, to_amount, native_currency, native_amount, \"native_amount_USD\", transaction_kind, transaction_hash) VALUES"
 
 	for true {
-		ok := scanner.Scan()
+		record, err := reader.Read()
 		//if total > 5000 {
 		//break
 		//}
-		if !ok {
+		if err != nil {
 			break
 		}
-		splitRow := strings.Split(scanner.Text(), ",")
 		// descontruct the row into variables
 		id := total
-		timestamp := splitRow[0]
-		transactionDesc := splitRow[1]
-		currency := splitRow[2]
-		amount := splitRow[3]
-		toCurrency := splitRow[4]
-		toAmount := splitRow[5]
-		nativeCurrency := splitRow[6]
-		nativeAmount := splitRow[7]
-		nativeAmountUSD := splitRow[8]
-		transactionKind := splitRow[9]
-		transactionHash := splitRow[10]
+		timestamp := record[0]
+		transactionDesc := record[1]
+		currency := record[2]
+		amount := record[3]
+		toCurrency := record[4]
+		toAmount := record[5]
+		nativeCurrency := record[6]
+		nativeAmount := record[7]
+		nativeAmountUSD := record[8]
+		transactionKind := record[9]
+		transactionHash := record[10]
 		partialQuery := fmt.Sprintf(" ('%d', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s'),", id, timestamp, transactionDesc, currency, amount, toCurrency, toAmount, nativeCurrency, nativeAmount, nativeAmountUSD, transactionKind, transactionHash)
 		if toAmount == "" {
-			toAmount = "0"
 			partialQuery = fmt.Sprintf(" ('%d', '%s', '%s', '%s', '%s', '%s', NULL, '%s', '%s', '%s', '%s', '%s'),", id, timestamp, transactionDesc, currency, amount, toCurrency, nativeCurrency, nativeAmount, nativeAmountUSD, transactionKind, transactionHash)
 		}
 		bulkQuery += partialQuery
@@ -94,9 +97,6 @@ func InitDbFromCsv(csvFilePath string) {
 		fmt.Println("Total lines:", total)
 	}
 	bulkQuery = bulkQuery[:len(bulkQuery)-1] + ";"
-	if err := scanner.Err(); err != nil {
-		fmt.Println("Error reading file:", err)
-	}
 	_, err = db.Exec(bulkQuery)
 	if err != nil {
 		fmt.Println("Error executing bulk insert:", err)
