@@ -11,7 +11,7 @@ import (
 )
 
 // delete all rows from the crypto_csv_raw_data table and insert the data from the csv file
-func populateDbFromCsv(csvFilePath string) {
+func InitDbFromCsv(csvFilePath string) {
 	file, err := os.Open(csvFilePath)
 	if err != nil {
 		fmt.Println("Error opening file:", err)
