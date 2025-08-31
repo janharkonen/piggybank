@@ -12,23 +12,23 @@ import (
 
 // delete all rows from the crypto_csv_raw_data table and insert the data from the csv file
 func InitDbFromCsv(csvFilePath string) {
-	file, err := os.Open(csvFilePath)
+	csvFile, err := os.Open(csvFilePath)
 	if err != nil {
 		fmt.Println("Error opening file:", err)
 		return
 	}
-	defer file.Close()
+	defer csvFile.Close()
 
 	// Load the Postgres URI from environment variables or the .env file
 	postgresURI := os.Getenv("POSTGRES_URI")
 	if postgresURI == "" {
 		fmt.Println("Postgres URI not set in environment variables")
-		file, err := os.Open("../.env")
+		envFile, err := os.Open("../.env")
 		if err != nil {
 			fmt.Println("Error opening .env file:", err)
 			return
 		}
-		scanner := bufio.NewScanner(file)
+		scanner := bufio.NewScanner(envFile)
 		for scanner.Scan() {
 			fmt.Println(scanner.Text())
 			if strings.HasPrefix(scanner.Text(), "postgresql://") {
@@ -36,7 +36,7 @@ func InitDbFromCsv(csvFilePath string) {
 				continue
 			}
 		}
-		defer file.Close()
+		defer envFile.Close()
 	}
 
 	// Open the database connection
@@ -55,7 +55,7 @@ func InitDbFromCsv(csvFilePath string) {
 	}
 
 	total := 0
-	scanner := bufio.NewScanner(file)
+	scanner := bufio.NewScanner(csvFile)
 	scanner.Scan()
 	fmt.Println(scanner.Text())
 
