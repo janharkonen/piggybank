@@ -22,14 +22,16 @@ func main() {
 	}
 	defer db.Close()
 
-	err = InitDbFromCsv(db, "transactions.csv")
-	if err != nil {
-		fmt.Println("Error initializing database from CSV:", err)
-	}
-	//transactions, err := TransformRawData()
+	//err = InitDbFromCsv(db, "transactions.csv")
 	//if err != nil {
-	//	fmt.Println("Error transforming raw data:", err)
-	//	return
+	//	fmt.Println("Error initializing database from CSV:", err)
 	//}
-	//fmt.Println(transactions)
+
+	transactions, err := TransformRawData(db)
+	if err != nil {
+		fmt.Println("Error transforming raw data:", err)
+		return
+	}
+
+	fmt.Println(transactions)
 }
