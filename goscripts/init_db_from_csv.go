@@ -1,57 +1,26 @@
 package main
 
 import (
-	"bufio"
 	"database/sql"
 	"encoding/csv"
 	"fmt"
 	"os"
-	"strings"
 
 	_ "github.com/lib/pq"
 )
 
 // delete all rows from the crypto_csv_raw_data table and insert the data from the csv file
-func InitDbFromCsv(csvFilePath string) {
+func InitDbFromCsv(db *sql.DB, csvFilePath string) error {
 	csvFile, err := os.Open(csvFilePath)
 	if err != nil {
-		fmt.Println("Error opening file:", err)
-		return
+		return err
 	}
 	defer csvFile.Close()
-
-	// Load the Postgres URI from environment variables or the .env file
-	postgresURI := os.Getenv("POSTGRES_URI")
-	if postgresURI == "" {
-		fmt.Println("Postgres URI not set in environment variables")
-		envFile, err := os.Open("../.env")
-		if err != nil {
-			fmt.Println("Error opening .env file:", err)
-			return
-		}
-		scanner := bufio.NewScanner(envFile)
-		for scanner.Scan() {
-			if strings.HasPrefix(scanner.Text(), "postgresql://") {
-				postgresURI = scanner.Text()
-				continue
-			}
-		}
-		defer envFile.Close()
-	}
-
-	// Open the database connection
-	db, err := sql.Open("postgres", postgresURI)
-	if err != nil {
-		fmt.Println("Error opening database:", err)
-		return
-	}
-	defer db.Close()
 
 	// Delete all rows from table
 	_, err = db.Exec("DELETE FROM piggybank.crypto_csv_raw_data")
 	if err != nil {
-		fmt.Println("Error deleting rows:", err)
-		return
+		return err
 	}
 
 	total := 0
@@ -59,8 +28,7 @@ func InitDbFromCsv(csvFilePath string) {
 	reader.FieldsPerRecord = 11
 	header, err := reader.Read()
 	if err != nil {
-		fmt.Println("Error reading header:", err)
-		return
+		return err
 	}
 	_ = header
 
@@ -99,8 +67,9 @@ func InitDbFromCsv(csvFilePath string) {
 	bulkQuery = bulkQuery[:len(bulkQuery)-1] + ";"
 	_, err = db.Exec(bulkQuery)
 	if err != nil {
-		fmt.Println("Error executing bulk insert:", err)
+		return err
 	}
+	return nil
 }
 
 //func addCsvRowToDatabase(db *sql.DB, row string) {
