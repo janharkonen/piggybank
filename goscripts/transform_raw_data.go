@@ -39,6 +39,9 @@ func TransformRawData(db *sql.DB) ([]Transaction, CurrencySet, YearList, error) 
 		currencySet[rawDataRow.ToCurrency] = struct{}{}
 
 		transaction, err = convertToTransaction(rawDataRow)
+		if total > 6000 {
+			break
+		}
 		if err == nil {
 			transactions = append(transactions, transaction)
 		}
@@ -80,17 +83,98 @@ func convertToTransaction(rawDataRow RawDataRow) (Transaction, error) {
 	// Condition
 	transaction.Aikaleima = rawDataRow.TimestampUTC
 	switch rawDataRow.TransactionKind {
+	case "admin_wallet_credited":
+		return Transaction{}, errors.New("skipping")
+	case "card_cashback_reverted":
+		return Transaction{}, errors.New("skipping")
+	case "card_top_up":
+		return Transaction{}, errors.New("skipping, topping up a card is not a taxable transaction")
+	case "crypto_earn_interest_paid":
+		transaction.Tyyppi = "DIVIDEND"
+		transaction.Kryptovaluutta = rawDataRow.Currency
+		transaction.HintaEUR = rawDataRow.NativeAmount
+		transaction.MääräKryptovaluuttana = rawDataRow.Amount
+	case "crypto_earn_program_created":
+		return Transaction{}, errors.New("skipping, creating an Earn deposit is not a taxable transaction")
+	case "crypto_earn_program_withdrawn":
+		return Transaction{}, errors.New("skipping, an Earn deposit ending is not a taxable transaction")
 	case "crypto_purchase":
 		transaction.Tyyppi = "BUY"
 		transaction.Kryptovaluutta = rawDataRow.Currency
 		transaction.HintaEUR = rawDataRow.NativeAmount
 		transaction.MääräKryptovaluuttana = rawDataRow.Amount
-		transaction.EURPerKryptovaluutta = rawDataRow.NativeAmount / rawDataRow.Amount
-		transaction.KryptovaluuttaaJäljellä = rawDataRow.Amount
+	case "crypto_viban_exchange":
+		transaction.Tyyppi = "SELL"
+		transaction.Kryptovaluutta = rawDataRow.Currency
+		transaction.HintaEUR = rawDataRow.NativeAmount
+		transaction.MääräKryptovaluuttana = -rawDataRow.Amount
+		transaction.LaskettuOstohinta = sql.NullFloat64{Float64: 0.0, Valid: true}
 	case "crypto_transfer":
-		return Transaction{}, errors.New("not an error per se, the volumes are just too tiny")
+		return Transaction{}, errors.New("skipping, the volumes are just too tiny")
+	case "crypto_wallet_swap_credited":
+		return Transaction{}, errors.New("skipping")
+	case "crypto_wallet_swap_debited":
+		return Transaction{}, errors.New("skipping")
+	case "finance.crypto_earn.loyalty_program_extra_interest_paid.crypto_wallet":
+		transaction.Tyyppi = "DIVIDEND"
+		transaction.Kryptovaluutta = rawDataRow.Currency
+		transaction.HintaEUR = rawDataRow.NativeAmount
+		transaction.MääräKryptovaluuttana = rawDataRow.Amount
+	case "finance.dpos.compound_interest.crypto_wallet":
+		transaction.Tyyppi = "DIVIDEND"
+		transaction.Kryptovaluutta = rawDataRow.Currency
+		transaction.HintaEUR = rawDataRow.NativeAmount
+		transaction.MääräKryptovaluuttana = rawDataRow.Amount
+	case "finance.dpos.staking.crypto_wallet":
+		return Transaction{}, errors.New("skipping")
+	case "finance.lockup.dpos_compound_interest.crypto_wallet":
+		transaction.Tyyppi = "DIVIDEND"
+		transaction.Kryptovaluutta = rawDataRow.Currency
+		transaction.HintaEUR = rawDataRow.NativeAmount
+		transaction.MääräKryptovaluuttana = rawDataRow.Amount
+	case "finance.lockup.dpos_lock.crypto_wallet":
+		return Transaction{}, errors.New("skipping")
+	case "lockup_lock":
+		return Transaction{}, errors.New("skipping, locking up crypto is not a taxable transaction")
+	case "lockup_unlock":
+		return Transaction{}, errors.New("skipping, unlocking crypto is not a taxable transaction")
+	case "lockup_upgrade":
+		return Transaction{}, errors.New("skipping, upgrading locking is not a taxable transaction")
+	case "mco_stake_reward":
+		transaction.Tyyppi = "DIVIDEND"
+		transaction.Kryptovaluutta = rawDataRow.Currency
+		transaction.HintaEUR = rawDataRow.NativeAmount
+		transaction.MääräKryptovaluuttana = rawDataRow.Amount
+	case "referral_bonus":
+		return Transaction{}, errors.New("skipping")
+	case "referral_card_cashback":
+		transaction.Tyyppi = "CASHBACK"
+		transaction.Kryptovaluutta = rawDataRow.Currency
+		transaction.HintaEUR = rawDataRow.NativeAmount
+		transaction.MääräKryptovaluuttana = rawDataRow.Amount
+	case "referral_gift":
+		return Transaction{}, errors.New("skipping")
+	case "reward.loyalty_program.trading_rebate.crypto_wallet":
+		return Transaction{}, errors.New("skipping, volume too tiny, amount in USD only")
+	case "rewards_platform_deposit_credited":
+		transaction.Tyyppi = "DIVIDEND"
+		transaction.Kryptovaluutta = rawDataRow.Currency
+		transaction.HintaEUR = rawDataRow.NativeAmount
+		transaction.MääräKryptovaluuttana = rawDataRow.Amount
+	case "viban_purchase":
+		transaction.Tyyppi = "BUY"
+		transaction.Kryptovaluutta = rawDataRow.ToCurrency
+		transaction.HintaEUR = rawDataRow.NativeAmount
+		if !rawDataRow.ToAmount.Valid {
+			return Transaction{}, errors.New("to amount is not valid")
+		} else {
+			transaction.MääräKryptovaluuttana = rawDataRow.ToAmount.Float64
+		}
+		transaction.LaskettuOstohinta = sql.NullFloat64{Float64: 0.0, Valid: false}
 	default:
 		return Transaction{}, errors.New("unknown transaction kind")
 	}
+	transaction.KryptovaluuttaaJäljellä = transaction.MääräKryptovaluuttana
+	transaction.EURPerKryptovaluutta = transaction.HintaEUR / transaction.MääräKryptovaluuttana
 	return transaction, nil
 }
