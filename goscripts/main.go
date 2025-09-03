@@ -14,8 +14,8 @@ type Transaction struct {
 	MääräKryptovaluuttana   float64
 	EURPerKryptovaluutta    float64
 	KryptovaluuttaaJäljellä float64
-	LaskettuOstohinta       float64
-	Voitto                  float64
+	LaskettuOstohinta       sql.NullFloat64
+	Voitto                  sql.NullFloat64
 	Kommentti               string
 }
 
@@ -55,5 +55,10 @@ func main() {
 	fmt.Println(currencySet)
 	fmt.Println(yearList)
 
+	err = WriteTransactionsToDB(db, transactions, currencySet, yearList)
+	if err != nil {
+		fmt.Println("Error writing transactions to database:", err)
+		return
+	}
 	fmt.Println(transactions[0])
 }
