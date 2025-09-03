@@ -42,9 +42,13 @@ func TransformRawData(db *sql.DB) ([]Transaction, CurrencySet, YearList, error) 
 		if total > 6000 {
 			break
 		}
-		if err == nil {
-			transactions = append(transactions, transaction)
+		if err != nil {
+			if err.Error() == "unknown transaction kind" {
+				panic(err)
+			}
+			continue
 		}
+		transactions = append(transactions, transaction)
 	}
 
 	// Construct list of years
