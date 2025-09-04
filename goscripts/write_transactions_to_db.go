@@ -19,7 +19,7 @@ func WriteTransactionsToDB(db *sql.DB, transactions []Transaction, currencySet C
 	}
 
 	bulkQuery := "INSERT INTO piggybank.crypto_refined (id, kryptovaluutta,\"aikaleima_UTC\", tyyppi, hinta_eur, maara_krypto, jaljella_krypto, laskettu_ostohinta, voitto, kommentti, eur_per_krypto) VALUES"
-	total := 0
+	total := -1
 	partialQuery := ""
 	for _, transaction := range transactions {
 		total += 1
