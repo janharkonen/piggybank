@@ -52,18 +52,22 @@ func calculateFIFOPurchasePriceAndAdjustCryptoBalanceInBuyRows(
 		panic("sell index is not a sell transaction")
 	}
 	var soldCryptoAmount float64 = transactions[sellIndex].MääräKryptovaluuttana
-	var calucatedPurchasePrice float64 = 0
+	var calculatedPurchasePrice float64 = 0
 	var buyIndex int = 0
 	for soldCryptoAmount > 0 {
 		transaction := transactions[buyIndex]
 		if (transaction.Kryptovaluutta == currency) && (transaction.Tyyppi == "BUY") && (transaction.KryptovaluuttaaJäljellä.Valid) && (transaction.KryptovaluuttaaJäljellä.Float64 != 0) {
 			if soldCryptoAmount >= transaction.KryptovaluuttaaJäljellä.Float64 {
-				soldCryptoAmount -= transaction.KryptovaluuttaaJäljellä.Float64
-				calucatedPurchasePrice += transaction.HintaEUR
+				calculatedPurchasePrice += transaction.KryptovaluuttaaJäljellä.Float64 * transaction.EURPerKryptovaluutta
 				transactions[buyIndex].KryptovaluuttaaJäljellä = sql.NullFloat64{Float64: 0, Valid: true}
+				soldCryptoAmount -= transaction.KryptovaluuttaaJäljellä.Float64
+			} else {
+				calculatedPurchasePrice += soldCryptoAmount * transaction.EURPerKryptovaluutta
+				transactions[buyIndex].KryptovaluuttaaJäljellä = sql.NullFloat64{Float64: transaction.KryptovaluuttaaJäljellä.Float64 - soldCryptoAmount, Valid: true}
+				soldCryptoAmount = 0
 			}
 		}
 		buyIndex++
 	}
-	transactions[sellIndex].LaskettuOstohinta = sql.NullFloat64{Float64: calucatedPurchasePrice, Valid: true}
+	transactions[sellIndex].LaskettuOstohinta = sql.NullFloat64{Float64: calculatedPurchasePrice, Valid: true}
 }
