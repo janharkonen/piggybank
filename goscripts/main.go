@@ -13,7 +13,7 @@ type Transaction struct {
 	HintaEUR                float64
 	MääräKryptovaluuttana   float64
 	EURPerKryptovaluutta    float64
-	KryptovaluuttaaJäljellä float64
+	KryptovaluuttaaJäljellä sql.NullFloat64
 	LaskettuOstohinta       sql.NullFloat64
 	Voitto                  sql.NullFloat64
 	Kommentti               string

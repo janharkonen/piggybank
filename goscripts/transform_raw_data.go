@@ -98,6 +98,7 @@ func convertToTransaction(rawDataRow RawDataRow) (Transaction, error) {
 		transaction.Kryptovaluutta = rawDataRow.Currency
 		transaction.HintaEUR = rawDataRow.NativeAmount
 		transaction.MääräKryptovaluuttana = rawDataRow.Amount
+		transaction.KryptovaluuttaaJäljellä = sql.NullFloat64{Float64: transaction.MääräKryptovaluuttana, Valid: true}
 	case "crypto_earn_program_created":
 		return Transaction{}, errors.New("skipping, creating an Earn deposit is not a taxable transaction")
 	case "crypto_earn_program_withdrawn":
@@ -107,6 +108,7 @@ func convertToTransaction(rawDataRow RawDataRow) (Transaction, error) {
 		transaction.Kryptovaluutta = rawDataRow.Currency
 		transaction.HintaEUR = rawDataRow.NativeAmount
 		transaction.MääräKryptovaluuttana = rawDataRow.Amount
+		transaction.KryptovaluuttaaJäljellä = sql.NullFloat64{Float64: transaction.MääräKryptovaluuttana, Valid: true}
 	case "crypto_viban_exchange":
 		transaction.Tyyppi = "SELL"
 		transaction.Kryptovaluutta = rawDataRow.Currency
@@ -124,11 +126,13 @@ func convertToTransaction(rawDataRow RawDataRow) (Transaction, error) {
 		transaction.Kryptovaluutta = rawDataRow.Currency
 		transaction.HintaEUR = rawDataRow.NativeAmount
 		transaction.MääräKryptovaluuttana = rawDataRow.Amount
+		transaction.KryptovaluuttaaJäljellä = sql.NullFloat64{Float64: transaction.MääräKryptovaluuttana, Valid: true}
 	case "finance.dpos.compound_interest.crypto_wallet":
 		transaction.Tyyppi = "DIVIDEND"
 		transaction.Kryptovaluutta = rawDataRow.Currency
 		transaction.HintaEUR = rawDataRow.NativeAmount
 		transaction.MääräKryptovaluuttana = rawDataRow.Amount
+		transaction.KryptovaluuttaaJäljellä = sql.NullFloat64{Float64: transaction.MääräKryptovaluuttana, Valid: true}
 	case "finance.dpos.staking.crypto_wallet":
 		return Transaction{}, errors.New("skipping")
 	case "finance.lockup.dpos_compound_interest.crypto_wallet":
@@ -136,6 +140,7 @@ func convertToTransaction(rawDataRow RawDataRow) (Transaction, error) {
 		transaction.Kryptovaluutta = rawDataRow.Currency
 		transaction.HintaEUR = rawDataRow.NativeAmount
 		transaction.MääräKryptovaluuttana = rawDataRow.Amount
+		transaction.KryptovaluuttaaJäljellä = sql.NullFloat64{Float64: transaction.MääräKryptovaluuttana, Valid: true}
 	case "finance.lockup.dpos_lock.crypto_wallet":
 		return Transaction{}, errors.New("skipping")
 	case "lockup_lock":
@@ -149,6 +154,7 @@ func convertToTransaction(rawDataRow RawDataRow) (Transaction, error) {
 		transaction.Kryptovaluutta = rawDataRow.Currency
 		transaction.HintaEUR = rawDataRow.NativeAmount
 		transaction.MääräKryptovaluuttana = rawDataRow.Amount
+		transaction.KryptovaluuttaaJäljellä = sql.NullFloat64{Float64: transaction.MääräKryptovaluuttana, Valid: true}
 	case "referral_bonus":
 		return Transaction{}, errors.New("skipping")
 	case "referral_card_cashback":
@@ -156,6 +162,7 @@ func convertToTransaction(rawDataRow RawDataRow) (Transaction, error) {
 		transaction.Kryptovaluutta = rawDataRow.Currency
 		transaction.HintaEUR = rawDataRow.NativeAmount
 		transaction.MääräKryptovaluuttana = rawDataRow.Amount
+		transaction.KryptovaluuttaaJäljellä = sql.NullFloat64{Float64: transaction.MääräKryptovaluuttana, Valid: true}
 	case "referral_gift":
 		return Transaction{}, errors.New("skipping")
 	case "reward.loyalty_program.trading_rebate.crypto_wallet":
@@ -165,6 +172,7 @@ func convertToTransaction(rawDataRow RawDataRow) (Transaction, error) {
 		transaction.Kryptovaluutta = rawDataRow.Currency
 		transaction.HintaEUR = rawDataRow.NativeAmount
 		transaction.MääräKryptovaluuttana = rawDataRow.Amount
+		transaction.KryptovaluuttaaJäljellä = sql.NullFloat64{Float64: transaction.MääräKryptovaluuttana, Valid: true}
 	case "viban_purchase":
 		transaction.Tyyppi = "BUY"
 		transaction.Kryptovaluutta = rawDataRow.ToCurrency
@@ -173,12 +181,12 @@ func convertToTransaction(rawDataRow RawDataRow) (Transaction, error) {
 			return Transaction{}, errors.New("to amount is not valid")
 		} else {
 			transaction.MääräKryptovaluuttana = rawDataRow.ToAmount.Float64
+			transaction.KryptovaluuttaaJäljellä = sql.NullFloat64{Float64: transaction.MääräKryptovaluuttana, Valid: true}
 		}
 		transaction.LaskettuOstohinta = sql.NullFloat64{Float64: 0.0, Valid: false}
 	default:
 		return Transaction{}, errors.New("unknown transaction kind")
 	}
-	transaction.KryptovaluuttaaJäljellä = transaction.MääräKryptovaluuttana
 	transaction.EURPerKryptovaluutta = transaction.HintaEUR / transaction.MääräKryptovaluuttana
 	return transaction, nil
 }
