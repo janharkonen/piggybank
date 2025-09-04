@@ -55,7 +55,13 @@ func main() {
 	fmt.Println(currencySet)
 	fmt.Println(yearList)
 
-	err = WriteTransactionsToDB(db, transactions, currencySet, yearList)
+	transactions_calculated, err := CalculateTransactions(transactions, currencySet, yearList)
+	if err != nil {
+		fmt.Println("Error calculating transactions:", err)
+		return
+	}
+
+	err = WriteTransactionsToDB(db, transactions_calculated, currencySet, yearList)
 	if err != nil {
 		fmt.Println("Error writing transactions to database:", err)
 		return
