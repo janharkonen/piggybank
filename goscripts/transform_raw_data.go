@@ -114,7 +114,11 @@ func convertToTransaction(rawDataRow RawDataRow) (Transaction, error) {
 		transaction.MääräKryptovaluuttana = -rawDataRow.Amount
 		transaction.LaskettuOstohinta = sql.NullFloat64{Float64: 0.0, Valid: true}
 	case "crypto_transfer":
-		return Transaction{}, errors.New("skipping, the volumes are just too tiny")
+		transaction.Tyyppi = "GIFT"
+		transaction.Kryptovaluutta = rawDataRow.Currency
+		transaction.HintaEUR = rawDataRow.NativeAmount
+		transaction.MääräKryptovaluuttana = rawDataRow.Amount
+		transaction.KryptovaluuttaaJäljellä = sql.NullFloat64{Float64: transaction.MääräKryptovaluuttana, Valid: true}
 	case "crypto_wallet_swap_credited":
 		return Transaction{}, errors.New("skipping")
 	case "crypto_wallet_swap_debited":

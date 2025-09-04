@@ -3,6 +3,7 @@ package main
 import (
 	"database/sql"
 	"fmt"
+	"math"
 )
 
 // transform the raw data from the database into the transaction struct
@@ -50,26 +51,35 @@ func calculateFIFOPurchasePriceAndAdjustCryptoBalanceInBuyRows(
 		panic("sell index is not a sell transaction")
 	}
 	var soldCryptoAmount float64 = transactions[sellIndex].MääräKryptovaluuttana
+	var totalCalculatedPurchasePrice float64 = 0
 	var calculatedPurchasePrice float64 = 0
 	var buyIndex int = 0
 	for soldCryptoAmount > 0 {
+		if buyIndex >= len(transactions) {
+			panic("no more resources to even sell")
+		}
 		transaction := transactions[buyIndex]
-
 		if isAnAqcuiredAsset(transaction, currency) {
+
+			if (transaction.Tyyppi != "CASHBACK") && (transaction.Tyyppi != "DIVIDEND") && (transaction.Tyyppi != "GIFT") {
+				calculatedPurchasePrice = math.Min(transaction.KryptovaluuttaaJäljellä.Float64, soldCryptoAmount) * transaction.EURPerKryptovaluutta
+			} else {
+				calculatedPurchasePrice = 0
+			}
 			if soldCryptoAmount >= transaction.KryptovaluuttaaJäljellä.Float64 {
-				calculatedPurchasePrice += transaction.KryptovaluuttaaJäljellä.Float64 * transaction.EURPerKryptovaluutta
+				totalCalculatedPurchasePrice += calculatedPurchasePrice
 				transactions[buyIndex].KryptovaluuttaaJäljellä = sql.NullFloat64{Float64: 0, Valid: true}
 				soldCryptoAmount -= transaction.KryptovaluuttaaJäljellä.Float64
 			} else {
-				calculatedPurchasePrice += soldCryptoAmount * transaction.EURPerKryptovaluutta
+				totalCalculatedPurchasePrice += calculatedPurchasePrice
 				transactions[buyIndex].KryptovaluuttaaJäljellä = sql.NullFloat64{Float64: transaction.KryptovaluuttaaJäljellä.Float64 - soldCryptoAmount, Valid: true}
 				soldCryptoAmount = 0
 			}
 		}
 		buyIndex++
 	}
-	transactions[sellIndex].LaskettuOstohinta = sql.NullFloat64{Float64: calculatedPurchasePrice, Valid: true}
-	profit := transactions[sellIndex].HintaEUR - calculatedPurchasePrice
+	transactions[sellIndex].LaskettuOstohinta = sql.NullFloat64{Float64: totalCalculatedPurchasePrice, Valid: true}
+	profit := transactions[sellIndex].HintaEUR - totalCalculatedPurchasePrice
 	transactions[sellIndex].Voitto = sql.NullFloat64{Float64: profit, Valid: true}
 }
 
@@ -80,7 +90,7 @@ func isAnAqcuiredAsset(transaction Transaction, currency string) bool {
 		return false
 	}
 
-	isAnAcquiredAsset := transaction.Tyyppi == "BUY"
+	isAnAcquiredAsset := (transaction.Tyyppi == "BUY") || (transaction.Tyyppi == "CASHBACK") || (transaction.Tyyppi == "DIVIDEND") || (transaction.Tyyppi == "GIFT")
 	if !isAnAcquiredAsset {
 		return false
 	}
