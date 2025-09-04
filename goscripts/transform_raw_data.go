@@ -3,7 +3,6 @@ package main
 import (
 	"database/sql"
 	"errors"
-	"fmt"
 
 	_ "github.com/lib/pq"
 )
@@ -31,7 +30,7 @@ func TransformRawData(db *sql.DB) ([]Transaction, CurrencySet, YearList, error) 
 	// Loop through rows and fill transactions list
 	for rows.Next() {
 		total += 1
-		fmt.Println("Total rows:", total)
+		//fmt.Println("Total rows:", total)
 		rawDataRow, err = convertFromDBtoRawDataRow(rows)
 		if err != nil {
 			return []Transaction{}, nil, nil, err

@@ -16,10 +16,13 @@ func CalculateTransactions(transactions []Transaction, currencySet CurrencySet, 
 }
 
 func calculateTransactionsForCurrency(transactions []Transaction, currency string) {
+	fmt.Println("Calculating transactions for currency:", currency, "start")
 	var sellIndexOffset int = -1
 	for calculateNextSale(transactions, currency, &sellIndexOffset) {
-		fmt.Println("SELL", currency, ":", sellIndexOffset+1)
+		continue
+		//fmt.Println("SELL", currency, ":", sellIndexOffset+1)
 	}
+	fmt.Println("Calculating transactions for currency:", currency, "done")
 }
 
 func calculateNextSale(

@@ -47,6 +47,7 @@ func main() {
 	//	fmt.Println("Error initializing database from CSV:", err)
 	//}
 
+	fmt.Println("Transforming raw data...")
 	transactions, currencySet, yearList, err := TransformRawData(db)
 	if err != nil {
 		fmt.Println("Error transforming raw data:", err)
@@ -56,12 +57,14 @@ func main() {
 	fmt.Println(currencySet)
 	fmt.Println(yearList)
 
+	fmt.Println("Calculating transactions...")
 	transactions_calculated, err := CalculateTransactions(transactions, currencySet, yearList)
 	if err != nil {
 		fmt.Println("Error calculating transactions:", err)
 		return
 	}
 
+	fmt.Println("Writing transactions to database...")
 	err = WriteTransactionsToDB(db, transactions_calculated, currencySet, yearList)
 	if err != nil {
 		fmt.Println("Error writing transactions to database:", err)

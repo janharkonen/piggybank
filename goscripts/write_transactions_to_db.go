@@ -25,7 +25,7 @@ func WriteTransactionsToDB(db *sql.DB, transactions []Transaction, currencySet C
 	partialQuery := ""
 	for _, transaction := range transactions {
 		total += 1
-		fmt.Println("Total rows:", total)
+		//fmt.Println("Total rows:", total)
 		jaljella_krypto = "NULL"
 		if transaction.KryptovaluuttaaJäljellä.Valid {
 			jaljella_krypto = fmt.Sprintf("'%f'", transaction.KryptovaluuttaaJäljellä.Float64)
