@@ -53,11 +53,11 @@ func calculateFIFOPurchasePriceAndAdjustCryptoBalanceInBuyRows(
 	var buyIndex int = 0
 	for soldCryptoAmount > 0 {
 		transaction := transactions[buyIndex]
-		if (transaction.Kryptovaluutta == currency) && (transaction.Tyyppi == "BUY") && (transaction.KryptovaluuttaaJäljellä != 0) {
-			if soldCryptoAmount >= transaction.KryptovaluuttaaJäljellä {
-				soldCryptoAmount -= transaction.KryptovaluuttaaJäljellä
+		if (transaction.Kryptovaluutta == currency) && (transaction.Tyyppi == "BUY") && (transaction.KryptovaluuttaaJäljellä.Valid) && (transaction.KryptovaluuttaaJäljellä.Float64 != 0) {
+			if soldCryptoAmount >= transaction.KryptovaluuttaaJäljellä.Float64 {
+				soldCryptoAmount -= transaction.KryptovaluuttaaJäljellä.Float64
 				calucatedPurchasePrice += transaction.HintaEUR
-				transactions[buyIndex].KryptovaluuttaaJäljellä = 0
+				transactions[buyIndex].KryptovaluuttaaJäljellä = sql.NullFloat64{Float64: 0, Valid: true}
 			}
 		}
 		buyIndex++
