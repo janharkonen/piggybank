@@ -70,4 +70,6 @@ func calculateFIFOPurchasePriceAndAdjustCryptoBalanceInBuyRows(
 		buyIndex++
 	}
 	transactions[sellIndex].LaskettuOstohinta = sql.NullFloat64{Float64: calculatedPurchasePrice, Valid: true}
+	profit := transactions[sellIndex].HintaEUR - calculatedPurchasePrice
+	transactions[sellIndex].Voitto = sql.NullFloat64{Float64: profit, Valid: true}
 }
