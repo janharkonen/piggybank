@@ -36,18 +36,16 @@ func TransformRawData(db *sql.DB) ([]Transaction, CurrencySet, YearList, error) 
 		if err != nil {
 			return []Transaction{}, nil, nil, err
 		}
-		currencySet[rawDataRow.ToCurrency] = struct{}{}
 
 		transaction, err = convertToTransaction(rawDataRow)
-		if total > 6000 {
-			break
-		}
+
 		if err != nil {
 			if err.Error() == "unknown transaction kind" {
 				panic(err)
 			}
 			continue
 		}
+		currencySet[transaction.Kryptovaluutta] = struct{}{}
 		transactions = append(transactions, transaction)
 	}
 
