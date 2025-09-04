@@ -48,6 +48,9 @@ func calculateFIFOPurchasePriceAndAdjustCryptoBalanceInBuyRows(
 	currency string,
 	sellIndex int,
 ) {
+	if transactions[sellIndex].Tyyppi != "SELL" {
+		panic("sell index is not a sell transaction")
+	}
 	var soldCryptoAmount float64 = transactions[sellIndex].MääräKryptovaluuttana
 	var calucatedPurchasePrice float64 = 0
 	var buyIndex int = 0
