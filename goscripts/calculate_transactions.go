@@ -8,19 +8,17 @@ import (
 // transform the raw data from the database into the transaction struct
 func CalculateTransactions(transactions []Transaction, currencySet CurrencySet, yearList YearList) ([]Transaction, error) {
 
-	calculateTransactionsForCurrency(transactions, "DOGE")
-	//for currency := range currencySet {
-	//	calculateTransactionsForCurrency(transactions, currency)
-	//}
+	for currency := range currencySet {
+		calculateTransactionsForCurrency(transactions, currency)
+	}
 	return transactions, nil
 }
 
 func calculateTransactionsForCurrency(transactions []Transaction, currency string) {
 	var sellIndexOffset int = -1
 	for calculateNextSale(transactions, currency, &sellIndexOffset) {
-		fmt.Println("id is:", sellIndexOffset+1)
+		fmt.Println("SELL", currency, ":", sellIndexOffset+1)
 	}
-	fmt.Println(sellIndexOffset)
 }
 
 func calculateNextSale(
