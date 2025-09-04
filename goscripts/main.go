@@ -16,6 +16,7 @@ type Transaction struct {
 	KryptovaluuttaaJäljellä sql.NullFloat64
 	LaskettuOstohinta       sql.NullFloat64
 	Voitto                  sql.NullFloat64
+	Verotettava             sql.NullFloat64
 	Kommentti               string
 }
 

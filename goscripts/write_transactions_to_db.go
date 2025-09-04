@@ -11,6 +11,7 @@ func WriteTransactionsToDB(db *sql.DB, transactions []Transaction, currencySet C
 
 	var laskettuOstohinta string
 	var voitto string
+	var verotettava string
 	var jaljella_krypto string
 
 	// Delete all rows from table
@@ -19,7 +20,7 @@ func WriteTransactionsToDB(db *sql.DB, transactions []Transaction, currencySet C
 		return err
 	}
 
-	bulkQuery := "INSERT INTO piggybank.crypto_refined (id, kryptovaluutta,\"aikaleima_UTC\", tyyppi, hinta_eur, maara_krypto, jaljella_krypto, laskettu_ostohinta, voitto, kommentti, eur_per_krypto) VALUES"
+	bulkQuery := "INSERT INTO piggybank.crypto_refined (id, kryptovaluutta,\"aikaleima_UTC\", tyyppi, hinta_eur, maara_krypto, jaljella_krypto, laskettu_ostohinta, voitto, verotettava, kommentti, eur_per_krypto) VALUES"
 	total := -1
 	partialQuery := ""
 	for _, transaction := range transactions {
@@ -37,7 +38,11 @@ func WriteTransactionsToDB(db *sql.DB, transactions []Transaction, currencySet C
 		if transaction.Voitto.Valid {
 			voitto = fmt.Sprintf("'%f'", transaction.Voitto.Float64)
 		}
-		partialQuery = fmt.Sprintf(" ('%d', '%s', '%s', '%s', '%f', '%f', %s, %s, %s, '%s', '%f'),", total, transaction.Kryptovaluutta, transaction.Aikaleima.Format(time.RFC3339), transaction.Tyyppi, transaction.HintaEUR, transaction.MääräKryptovaluuttana, jaljella_krypto, laskettuOstohinta, voitto, transaction.Kommentti, transaction.EURPerKryptovaluutta)
+		verotettava = "NULL"
+		if transaction.Verotettava.Valid {
+			verotettava = fmt.Sprintf("'%f'", transaction.Verotettava.Float64)
+		}
+		partialQuery = fmt.Sprintf(" ('%d', '%s', '%s', '%s', '%f', '%f', %s, %s, %s, %s, '%s', '%f'),", total, transaction.Kryptovaluutta, transaction.Aikaleima.Format(time.RFC3339), transaction.Tyyppi, transaction.HintaEUR, transaction.MääräKryptovaluuttana, jaljella_krypto, laskettuOstohinta, voitto, verotettava, transaction.Kommentti, transaction.EURPerKryptovaluutta)
 		bulkQuery += partialQuery
 	}
 	bulkQuery = bulkQuery[:len(bulkQuery)-1] + ";"
