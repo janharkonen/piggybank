@@ -168,6 +168,46 @@ func initTransactions() []Transaction {
 	transaction.EURPerKryptovaluutta = transaction.HintaEUR / transaction.MääräKryptovaluuttana
 	transactions = append(transactions, transaction)
 
+	// [16]
+	transaction = Transaction{}
+	transaction.Kryptovaluutta = "CRO"
+	transaction.Tyyppi = "BUY"
+	transaction.HintaEUR = 217.5
+	transaction.MääräKryptovaluuttana = 1500
+	transaction.KryptovaluuttaaJäljellä = sql.NullFloat64{Float64: transaction.MääräKryptovaluuttana, Valid: true}
+	transaction.EURPerKryptovaluutta = transaction.HintaEUR / transaction.MääräKryptovaluuttana
+	transactions = append(transactions, transaction)
+
+	// [17]
+	transaction = Transaction{}
+	transaction.Kryptovaluutta = "CRO"
+	transaction.Tyyppi = "GIFT"
+	transaction.HintaEUR = 318
+	transaction.MääräKryptovaluuttana = 2000
+	transaction.KryptovaluuttaaJäljellä = sql.NullFloat64{Float64: transaction.MääräKryptovaluuttana, Valid: true}
+	transaction.EURPerKryptovaluutta = transaction.HintaEUR / transaction.MääräKryptovaluuttana
+	transactions = append(transactions, transaction)
+
+	// [18]
+	transaction = Transaction{}
+	transaction.Kryptovaluutta = "CRO"
+	transaction.Tyyppi = "SELL"
+	transaction.HintaEUR = 0.33
+	transaction.MääräKryptovaluuttana = 3
+	transaction.KryptovaluuttaaJäljellä = sql.NullFloat64{Float64: transaction.MääräKryptovaluuttana, Valid: true}
+	transaction.EURPerKryptovaluutta = transaction.HintaEUR / transaction.MääräKryptovaluuttana
+	transactions = append(transactions, transaction)
+
+	// [19]
+	transaction = Transaction{}
+	transaction.Kryptovaluutta = "CRO"
+	transaction.Tyyppi = "SELL"
+	transaction.HintaEUR = 414.55
+	transaction.MääräKryptovaluuttana = 2512.401
+	transaction.KryptovaluuttaaJäljellä = sql.NullFloat64{Float64: transaction.MääräKryptovaluuttana, Valid: true}
+	transaction.EURPerKryptovaluutta = transaction.HintaEUR / transaction.MääräKryptovaluuttana
+	transactions = append(transactions, transaction)
+
 	return transactions
 }
 
@@ -201,6 +241,12 @@ func TestCalculateTransactions(t *testing.T) {
 		if transactions[sellIndex].LaskettuOstohinta.Float64 != 100.04 {
 			t.Error("calculateFIFOPurchasePriceAndAdjustCryptoBalanceInBuyRows test failed")
 		}
+		if math.Abs(transactions[sellIndex].Voitto.Float64-9.82) > 0.0000001 {
+			t.Error("calculateFIFOPurchasePriceAndAdjustCryptoBalanceInBuyRows test failed")
+		}
+		if math.Abs(transactions[sellIndex].Verotettava.Float64-9.82) > 0.0000001 {
+			t.Error("calculateFIFOPurchasePriceAndAdjustCryptoBalanceInBuyRows test failed")
+		}
 
 		// ----------------------------------------------------------------------------------
 		sellIndex = 4
@@ -212,6 +258,12 @@ func TestCalculateTransactions(t *testing.T) {
 			t.Error("calculateFIFOPurchasePriceAndAdjustCryptoBalanceInBuyRows test failed")
 		}
 		if transactions[sellIndex].LaskettuOstohinta.Float64 != 303.98 {
+			t.Error("calculateFIFOPurchasePriceAndAdjustCryptoBalanceInBuyRows test failed")
+		}
+		if math.Abs(transactions[sellIndex].Voitto.Float64-159.89) > 0.0000001 {
+			t.Error("calculateFIFOPurchasePriceAndAdjustCryptoBalanceInBuyRows test failed")
+		}
+		if math.Abs(transactions[sellIndex].Verotettava.Float64-159.89) > 0.0000001 {
 			t.Error("calculateFIFOPurchasePriceAndAdjustCryptoBalanceInBuyRows test failed")
 		}
 
@@ -227,6 +279,12 @@ func TestCalculateTransactions(t *testing.T) {
 		if math.Abs(transactions[sellIndex].LaskettuOstohinta.Float64-45.033) > 0.0000001 {
 			t.Error("calculateFIFOPurchasePriceAndAdjustCryptoBalanceInBuyRows test failed")
 		}
+		if math.Abs(transactions[sellIndex].Voitto.Float64-5.977) > 0.0000001 {
+			t.Error("calculateFIFOPurchasePriceAndAdjustCryptoBalanceInBuyRows test failed")
+		}
+		if math.Abs(transactions[sellIndex].Verotettava.Float64-5.977) > 0.0000001 {
+			t.Error("calculateFIFOPurchasePriceAndAdjustCryptoBalanceInBuyRows test failed")
+		}
 
 		// ----------------------------------------------------------------------------------
 		sellIndex = 8
@@ -238,6 +296,12 @@ func TestCalculateTransactions(t *testing.T) {
 			t.Error("calculateFIFOPurchasePriceAndAdjustCryptoBalanceInBuyRows test failed")
 		}
 		if math.Abs(transactions[sellIndex].LaskettuOstohinta.Float64-265.165) > 0.0000001 {
+			t.Error("calculateFIFOPurchasePriceAndAdjustCryptoBalanceInBuyRows test failed")
+		}
+		if math.Abs(transactions[sellIndex].Voitto.Float64+8.385) > 0.0000001 {
+			t.Error("calculateFIFOPurchasePriceAndAdjustCryptoBalanceInBuyRows test failed")
+		}
+		if math.Abs(transactions[sellIndex].Verotettava.Float64+8.385) > 0.0000001 {
 			t.Error("calculateFIFOPurchasePriceAndAdjustCryptoBalanceInBuyRows test failed")
 		}
 
@@ -254,6 +318,9 @@ func TestCalculateTransactions(t *testing.T) {
 			t.Error("calculateFIFOPurchasePriceAndAdjustCryptoBalanceInBuyRows test failed")
 		}
 		if math.Abs(transactions[sellIndex].Voitto.Float64+131.6256) > 0.0000001 {
+			t.Error("calculateFIFOPurchasePriceAndAdjustCryptoBalanceInBuyRows test failed")
+		}
+		if math.Abs(transactions[sellIndex].Verotettava.Float64+131.6256) > 0.0000001 {
 			t.Error("calculateFIFOPurchasePriceAndAdjustCryptoBalanceInBuyRows test failed")
 		}
 
@@ -275,6 +342,9 @@ func TestCalculateTransactions(t *testing.T) {
 		if math.Abs(transactions[sellIndex].Voitto.Float64+2.6244) > 0.0000001 {
 			t.Error("calculateFIFOPurchasePriceAndAdjustCryptoBalanceInBuyRows test failed")
 		}
+		if math.Abs(transactions[sellIndex].Verotettava.Float64+2.6244) > 0.0000001 {
+			t.Error("calculateFIFOPurchasePriceAndAdjustCryptoBalanceInBuyRows test failed")
+		}
 
 		// ----------------------------------------------------------------------------------
 		sellIndex = 15
@@ -294,8 +364,52 @@ func TestCalculateTransactions(t *testing.T) {
 		if math.Abs(transactions[sellIndex].Voitto.Float64-8.87) > 0.0000001 {
 			t.Error("calculateFIFOPurchasePriceAndAdjustCryptoBalanceInBuyRows test failed")
 		}
-		//if transactions[5].KryptovaluuttaaJäljellä.Float64 != 0 {
-		//	t.Error("calculateFIFOPurchasePriceAndAdjustCryptoBalanceInBuyRows test failed")
-		//}
+		if math.Abs(transactions[sellIndex].Verotettava.Float64-8.8103571429) > 0.0000001 {
+			t.Error("calculateFIFOPurchasePriceAndAdjustCryptoBalanceInBuyRows test failed")
+		}
+
+		// ----------------------------------------------------------------------------------
+		if math.Abs(transactions[12].KryptovaluuttaaJäljellä.Float64-0.507) > 0.0000001 {
+			t.Error("calculateFIFOPurchasePriceAndAdjustCryptoBalanceInBuyRows test failed")
+		}
+		sellIndex = 18
+		calculateFIFOPurchasePriceAndAdjustCryptoBalanceInBuyRows(transactions, "CRO", sellIndex)
+		if transactions[12].KryptovaluuttaaJäljellä.Float64 != 0 {
+			t.Error("calculateFIFOPurchasePriceAndAdjustCryptoBalanceInBuyRows test failed")
+		}
+		if transactions[16].KryptovaluuttaaJäljellä.Float64 != 1497.507 {
+			t.Error("calculateFIFOPurchasePriceAndAdjustCryptoBalanceInBuyRows test failed")
+		}
+		if math.Abs(transactions[sellIndex].LaskettuOstohinta.Float64-0.361485) > 0.0000001 {
+			t.Error("calculateFIFOPurchasePriceAndAdjustCryptoBalanceInBuyRows test failed")
+		}
+		if math.Abs(transactions[sellIndex].Voitto.Float64+0.031485) > 0.0000001 {
+			t.Error("calculateFIFOPurchasePriceAndAdjustCryptoBalanceInBuyRows test failed")
+		}
+		if math.Abs(transactions[sellIndex].Verotettava.Float64+0.0918421) > 0.0000001 {
+			t.Error("calculateFIFOPurchasePriceAndAdjustCryptoBalanceInBuyRows test failed")
+		}
+
+		// ----------------------------------------------------------------------------------
+		if math.Abs(transactions[16].KryptovaluuttaaJäljellä.Float64-1497.507) > 0.0000001 {
+			t.Error("calculateFIFOPurchasePriceAndAdjustCryptoBalanceInBuyRows test failed")
+		}
+		sellIndex = 19
+		calculateFIFOPurchasePriceAndAdjustCryptoBalanceInBuyRows(transactions, "CRO", sellIndex)
+		if transactions[16].KryptovaluuttaaJäljellä.Float64 != 0 {
+			t.Error("calculateFIFOPurchasePriceAndAdjustCryptoBalanceInBuyRows test failed")
+		}
+		if math.Abs(transactions[17].KryptovaluuttaaJäljellä.Float64-985.106) > 0.0000001 {
+			t.Error("calculateFIFOPurchasePriceAndAdjustCryptoBalanceInBuyRows test failed")
+		}
+		if math.Abs(transactions[sellIndex].LaskettuOstohinta.Float64-217.138515) > 0.0000001 {
+			t.Error("calculateFIFOPurchasePriceAndAdjustCryptoBalanceInBuyRows test failed")
+		}
+		if math.Abs(transactions[sellIndex].Voitto.Float64-197.411485) > 0.0000001 {
+			t.Error("calculateFIFOPurchasePriceAndAdjustCryptoBalanceInBuyRows test failed")
+		}
+		if math.Abs(transactions[sellIndex].Verotettava.Float64-36.043339) > 0.0000001 {
+			t.Error("calculateFIFOPurchasePriceAndAdjustCryptoBalanceInBuyRows test failed")
+		}
 	})
 }

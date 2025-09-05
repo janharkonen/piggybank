@@ -57,6 +57,8 @@ func calculateFIFOPurchasePriceAndAdjustCryptoBalanceInBuyRows(
 	var totalCalculatedPurchasePrice float64 = 0
 	var calculatedPurchasePrice float64 = 0
 	var buyIndex int = 0
+	var taxableProfit float64 = 0
+
 	for soldCryptoAmount > 0 {
 		if buyIndex >= len(transactions) {
 			panic("no more resources to even sell")
@@ -72,10 +74,16 @@ func calculateFIFOPurchasePriceAndAdjustCryptoBalanceInBuyRows(
 			if soldCryptoAmount >= transaction.KryptovaluuttaaJäljellä.Float64 {
 				totalCalculatedPurchasePrice += calculatedPurchasePrice
 				transactions[buyIndex].KryptovaluuttaaJäljellä = sql.NullFloat64{Float64: 0, Valid: true}
+				if (transaction.Tyyppi == "CASHBACK") || (transaction.Tyyppi == "GIFT") {
+					taxableProfit -= transaction.EURPerKryptovaluutta * transaction.KryptovaluuttaaJäljellä.Float64
+				}
 				soldCryptoAmount -= transaction.KryptovaluuttaaJäljellä.Float64
 			} else {
 				totalCalculatedPurchasePrice += calculatedPurchasePrice
 				transactions[buyIndex].KryptovaluuttaaJäljellä = sql.NullFloat64{Float64: transaction.KryptovaluuttaaJäljellä.Float64 - soldCryptoAmount, Valid: true}
+				if (transaction.Tyyppi == "CASHBACK") || (transaction.Tyyppi == "GIFT") {
+					taxableProfit -= transaction.EURPerKryptovaluutta * soldCryptoAmount
+				}
 				soldCryptoAmount = 0
 			}
 		}
@@ -83,7 +91,9 @@ func calculateFIFOPurchasePriceAndAdjustCryptoBalanceInBuyRows(
 	}
 	transactions[sellIndex].LaskettuOstohinta = sql.NullFloat64{Float64: totalCalculatedPurchasePrice, Valid: true}
 	profit := transactions[sellIndex].HintaEUR - totalCalculatedPurchasePrice
+	taxableProfit += profit
 	transactions[sellIndex].Voitto = sql.NullFloat64{Float64: profit, Valid: true}
+	transactions[sellIndex].Verotettava = sql.NullFloat64{Float64: taxableProfit, Valid: true}
 }
 
 func isAnAqcuiredAsset(transaction Transaction, currency string) bool {
