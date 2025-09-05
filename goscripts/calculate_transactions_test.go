@@ -214,7 +214,7 @@ func initTransactions() []Transaction {
 func TestCalculateTransactions(t *testing.T) {
 
 	t.Run("dummy test 1", func(t *testing.T) {
-		if 1 != 1 {
+		if 1 != 2 {
 			t.Error("Dummy test 1 failed")
 		}
 	})
