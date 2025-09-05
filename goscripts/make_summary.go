@@ -16,9 +16,9 @@ func makeSummaryForCurrencyAndYear(transactions []Transaction, currency string, 
 	for _, transaction := range transactions {
 		if transaction.Kryptovaluutta == currency && transaction.Aikaleima.Year() == year {
 			if transaction.Tyyppi == "SELL" {
-				totalProfit += transaction.Voitto.Float64
+				totalProfit += transaction.Verotettava.Float64
 			}
 		}
 	}
-	fmt.Println("Total profit for ", currency, "in", year, ":", totalProfit, "EUR")
+	fmt.Println("Total taxable profit for ", currency, "in", year, ":", totalProfit, "EUR")
 }
