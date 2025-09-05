@@ -64,6 +64,9 @@ func main() {
 		return
 	}
 
+	fmt.Println("Making a summary of the transactions...")
+	MakeSummary(transactions_calculated, currencySet, yearList)
+
 	fmt.Println("Writing transactions to database...")
 	err = WriteTransactionsToDB(db, transactions_calculated, currencySet, yearList)
 	if err != nil {
