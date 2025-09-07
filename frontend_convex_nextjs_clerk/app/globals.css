@@ -1,8 +1,17 @@
 @import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: theme('colors.mint.500');
+  --foreground: theme('colors.slate.800');
+  --header-background: theme('colors.slate.100');
+  --header-border: theme('colors.slate.300');
+}
+.dark {
+  --background: theme('colors.slate.800');
+  --foreground: theme('colors.slate.200');
+  --header-background: theme('colors.slate.700');
+  --header-border: theme('colors.slate.300');
 }
 
 @theme inline {
@@ -11,12 +20,16 @@
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+@theme {
+  --color-mint-100: oklch(0.95 0.05 178);
+  --color-mint-200: oklch(0.85 0.08 178);
+  --color-mint-300: oklch(0.78 0.10 178);
+  --color-mint-400: oklch(0.74 0.11 178);
+  --color-mint-500: oklch(0.72 0.11 178);
+  --color-mint-600: oklch(0.65 0.12 178);
+  --color-mint-700: oklch(0.58 0.13 178);
+  --color-mint-800: oklch(0.50 0.14 178);
+  --color-mint-900: oklch(0.42 0.15 178);
 }
 
 body {
