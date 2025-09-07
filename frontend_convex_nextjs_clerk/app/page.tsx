@@ -11,12 +11,32 @@ import Link from "next/link";
 import { SignUpButton } from "@clerk/nextjs";
 import { SignInButton } from "@clerk/nextjs";
 import { UserButton } from "@clerk/nextjs";
+import DarkModeToggle from "@/components/Header/DarkModeToggle";
 
 export default function Home() {
   return (
     <>
-      <header className="sticky top-0 z-10 bg-background p-4 border-b-2 border-slate-200 dark:border-slate-800 flex flex-row justify-between items-center">
-        Convex + Next.js + Clerk
+      <header 
+      className="
+      sticky 
+      top-0 
+      z-10 
+      p-2 
+      border-b-2 
+      bg-slate-100
+      border-slate-300 
+      dark:bg-slate-700
+      dark:border-slate-600 
+      flex 
+      flex-row 
+      justify-between 
+      items-center"
+      >
+
+        <span className="text-lg font-bold pl-2">
+          Piggybank
+        </span>
+        <DarkModeToggle />
         <UserButton />
       </header>
       <main className="p-8 flex flex-col gap-8">
@@ -55,7 +75,7 @@ function SignInForm() {
 function Content() {
   const { viewer, numbers } =
     useQuery(api.myFunctions.listNumbers, {
-      count: 10,
+      count: 5,
     }) ?? {};
   const addNumber = useMutation(api.myFunctions.addNumber);
 
