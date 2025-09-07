@@ -29,15 +29,15 @@ export default function Home() {
       dark:border-slate-600 
       flex 
       flex-row 
-      justify-between 
+      gap-2
       items-center"
       >
 
-        <span className="text-lg font-bold pl-2">
+        <span className="text-lg font-bold pl-2 flex-grow">
           Piggybank
         </span>
-        <DarkModeToggle />
-        <UserButton />
+        <div className="flex-none" ><DarkModeToggle/></div>
+        <div className="flex flex-col items-center" ><UserButton/></div>
       </header>
       <main className="p-8 flex flex-col gap-8">
         <h1 className="text-4xl font-bold text-center">
