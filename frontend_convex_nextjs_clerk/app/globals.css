@@ -2,8 +2,8 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 :root {
-  --background: theme('colors.mint.500');
-  --foreground: theme('colors.slate.800');
+  --background: linear-gradient(to top right, theme('colors.mint.600'), theme('colors.mint.700'));
+  --foreground: linear-gradient(to top left, theme('colors.mint.300'), theme('colors.mint.400'));
   --header-background: theme('colors.slate.100');
   --header-border: theme('colors.slate.300');
 }
@@ -41,4 +41,5 @@ body {
 * {
   min-width: 0;
   min-height: 0;
+  box-sizing: border-box;
 }
