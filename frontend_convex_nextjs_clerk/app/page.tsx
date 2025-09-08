@@ -12,7 +12,7 @@ import { SignUpButton } from "@clerk/nextjs";
 import { SignInButton } from "@clerk/nextjs";
 import { UserButton } from "@clerk/nextjs";
 import DarkModeToggle from "@/components/Header/DarkModeToggle";
-import { Card, CardHeader, CardTitle, CardDescription, CardAction, CardContent, CardFooter } from "@/components/ui/card";
+import { Card, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
 export default function Home() {
@@ -71,38 +71,29 @@ function Header() {
 
 function SignInForm() {
   return (
-    <Card className="w-full max-w-sm">
+    <Card className="w-full max-w-xl">
+      <div className="relative top-0 right-4 self-end justify-self-end">
+        <SignUpButton mode="modal">
+          <Button variant="link" className="hover:cursor-pointer">Sign Up</Button>
+        </SignUpButton>
+      </div>
+      <img 
+      src="https://picapi.janharkonen.fi/api/pics/224ad3d792204463bf57ae0eda3bebde.png?BG=92"
+      alt="Piggybank Logo"
+      style={{
+        aspectRatio: 1 / 1,
+      }}
+      className="logo-img opacity-75 max-h-60 max-w-60 w-full aspect-square self-center filter dark:invert"
+      />
     <CardHeader>
-      <CardTitle>Login to your account</CardTitle>
-      <CardDescription>
-        Enter your email below to login to your account
-      </CardDescription>
-      <CardAction>
-        <Button variant="link">Sign Up</Button>
-      </CardAction>
+      <CardTitle className="text-3xl font-bold text-center">Piggybank</CardTitle>
+      {/*
+    */}
     </CardHeader>
-    <CardContent>
-      <form>
-        <div className="flex flex-col gap-6">
-          <div className="grid gap-2">
-          </div>
-          <div className="grid gap-2">
-            <div className="flex items-center">
-              <a
-                href="#"
-                className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
-              >
-                Forgot your password?
-              </a>
-            </div>
-          </div>
-        </div>
-      </form>
-    </CardContent>
     <CardFooter className="flex-col gap-2">
-      <Button type="submit" className="w-full">
-        Login
-      </Button>
+      <SignInButton mode="modal">
+        <Button type="submit" className="w-full hover:cursor-pointer">Login</Button>
+      </SignInButton>
     </CardFooter>
   </Card>
     /*
@@ -128,7 +119,6 @@ function SignInForm() {
 
       />
       <p className="font-bold text-3xl sm:text-5xl p-4">Piggybank</p>
-      <SignInButton mode="modal">
       <Button className="bg-foreground text-background px-4 py-2 rounded-md">
       Sign in
         </Button>
