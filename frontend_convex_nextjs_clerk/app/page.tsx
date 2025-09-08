@@ -12,6 +12,7 @@ import { SignUpButton } from "@clerk/nextjs";
 import { SignInButton } from "@clerk/nextjs";
 import { UserButton } from "@clerk/nextjs";
 import DarkModeToggle from "@/components/Header/DarkModeToggle";
+import { Card, CardHeader, CardTitle, CardDescription, CardAction, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
 export default function Home() {
@@ -70,6 +71,41 @@ function Header() {
 
 function SignInForm() {
   return (
+    <Card className="w-full max-w-sm">
+    <CardHeader>
+      <CardTitle>Login to your account</CardTitle>
+      <CardDescription>
+        Enter your email below to login to your account
+      </CardDescription>
+      <CardAction>
+        <Button variant="link">Sign Up</Button>
+      </CardAction>
+    </CardHeader>
+    <CardContent>
+      <form>
+        <div className="flex flex-col gap-6">
+          <div className="grid gap-2">
+          </div>
+          <div className="grid gap-2">
+            <div className="flex items-center">
+              <a
+                href="#"
+                className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
+              >
+                Forgot your password?
+              </a>
+            </div>
+          </div>
+        </div>
+      </form>
+    </CardContent>
+    <CardFooter className="flex-col gap-2">
+      <Button type="submit" className="w-full">
+        Login
+      </Button>
+    </CardFooter>
+  </Card>
+    /*
     <div className="
     w-full
     max-w-4xl
@@ -84,8 +120,8 @@ function SignInForm() {
     style={{ background: 'var(--foreground)' }}
     >
     <div className="logo-div h-full flex flex-col items-center justify-center"> 
-      <img 
-      src="https://picapi.janharkonen.fi/api/pics/224ad3d792204463bf57ae0eda3bebde.png?BG=92"
+    <img 
+    src="https://picapi.janharkonen.fi/api/pics/224ad3d792204463bf57ae0eda3bebde.png?BG=92"
       alt="Piggybank Logo"
       style={{aspectRatio: 1 / 1, filter: "invert(0)"}}
       className="logo-img opacity-75 max-h-60 aspect-square"
@@ -93,18 +129,19 @@ function SignInForm() {
       />
       <p className="font-bold text-3xl sm:text-5xl p-4">Piggybank</p>
       <SignInButton mode="modal">
-        <Button className="bg-foreground text-background px-4 py-2 rounded-md">
-          Sign in
+      <Button className="bg-foreground text-background px-4 py-2 rounded-md">
+      Sign in
         </Button>
-      </SignInButton>
-      <SignUpButton mode="modal">
+        </SignInButton>
+        <SignUpButton mode="modal">
         <button className="bg-foreground text-background px-4 py-2 rounded-md">
-          Sign up
+        Sign up
         </button>
-      </SignUpButton>
-
-    </div>
-    </div>
+        </SignUpButton>
+        
+        </div>
+        </div>
+        */
   );
 }
 
