@@ -12,6 +12,7 @@ import { SignUpButton } from "@clerk/nextjs";
 import { SignInButton } from "@clerk/nextjs";
 import { UserButton } from "@clerk/nextjs";
 import DarkModeToggle from "@/components/Header/DarkModeToggle";
+import { Button } from "@/components/ui/button";
 
 export default function Home() {
   return (
@@ -92,9 +93,9 @@ function SignInForm() {
       />
       <p className="font-bold text-3xl sm:text-5xl p-4">Piggybank</p>
       <SignInButton mode="modal">
-        <button className="bg-foreground text-background px-4 py-2 rounded-md">
+        <Button className="bg-foreground text-background px-4 py-2 rounded-md">
           Sign in
-        </button>
+        </Button>
       </SignInButton>
       <SignUpButton mode="modal">
         <button className="bg-foreground text-background px-4 py-2 rounded-md">
