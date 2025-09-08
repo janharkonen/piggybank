@@ -11,51 +11,134 @@ import Link from "next/link";
 import { SignUpButton } from "@clerk/nextjs";
 import { SignInButton } from "@clerk/nextjs";
 import { UserButton } from "@clerk/nextjs";
+import DarkModeToggle from "@/components/Header/DarkModeToggle";
+import { Card, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 
 export default function Home() {
   return (
     <>
-      <header className="sticky top-0 z-10 bg-background p-4 border-b-2 border-slate-200 dark:border-slate-800 flex flex-row justify-between items-center">
-        Convex + Next.js + Clerk
-        <UserButton />
-      </header>
-      <main className="p-8 flex flex-col gap-8">
-        <h1 className="text-4xl font-bold text-center">
-          Convex + Next.js + Clerk
-        </h1>
+      <main className="flex flex-col h-screen flex-grow">
         <Authenticated>
+          <Header />
           <Content />
         </Authenticated>
         <Unauthenticated>
+        <div className="
+          w-full
+          h-screen
+          flex
+          justify-center
+          items-center
+        ">
+          <div className="absolute top-0 right-0">
+            <DarkModeToggle />
+          </div>
           <SignInForm />
+        </div>
         </Unauthenticated>
       </main>
     </>
   );
 }
 
+function Header() {
+  return (
+    <header 
+    className="
+    sticky 
+    top-0 
+    z-10 
+    p-2 
+    border-b-2 
+    bg-slate-100
+    border-slate-300 
+    dark:bg-slate-700
+    dark:border-slate-600 
+    flex 
+    flex-row 
+    gap-2
+    items-center"
+    >
+      <span className="text-lg font-bold pl-2 flex-grow">
+        Piggybank
+      </span>
+      <div className="flex-none" ><DarkModeToggle/></div>
+      <div className="flex flex-col items-center" ><UserButton/></div>
+    </header>
+  );
+}
+
 function SignInForm() {
   return (
-    <div className="flex flex-col gap-8 w-96 mx-auto">
-      <p>Log in to see the numbers</p>
+    <Card className="w-full max-w-xl">
+      <div className="relative top-0 right-4 self-end justify-self-end">
+        <SignUpButton mode="modal">
+          <Button variant="link" className="hover:cursor-pointer">Sign Up</Button>
+        </SignUpButton>
+      </div>
+      <img 
+      src="https://picapi.janharkonen.fi/api/pics/224ad3d792204463bf57ae0eda3bebde.png?BG=92"
+      alt="Piggybank Logo"
+      style={{
+        aspectRatio: 1 / 1,
+      }}
+      className="logo-img opacity-75 max-h-60 max-w-60 w-full aspect-square self-center filter dark:invert"
+      />
+    <CardHeader>
+      <CardTitle className="text-3xl font-bold text-center">Piggybank</CardTitle>
+      {/*
+    */}
+    </CardHeader>
+    <CardFooter className="flex-col gap-2">
       <SignInButton mode="modal">
-        <button className="bg-foreground text-background px-4 py-2 rounded-md">
-          Sign in
-        </button>
+        <Button type="submit" className="w-full hover:cursor-pointer">Login</Button>
       </SignInButton>
-      <SignUpButton mode="modal">
+    </CardFooter>
+  </Card>
+    /*
+    <div className="
+    w-full
+    max-w-4xl
+    mx-auto
+    shadow-2xl
+    border-2
+    border-mint-200
+    flex 
+    flex-col 
+    rounded-xl 
+    "
+    style={{ background: 'var(--foreground)' }}
+    >
+    <div className="logo-div h-full flex flex-col items-center justify-center"> 
+    <img 
+    src="https://picapi.janharkonen.fi/api/pics/224ad3d792204463bf57ae0eda3bebde.png?BG=92"
+      alt="Piggybank Logo"
+      style={{aspectRatio: 1 / 1, filter: "invert(0)"}}
+      className="logo-img opacity-75 max-h-60 aspect-square"
+
+      />
+      <p className="font-bold text-3xl sm:text-5xl p-4">Piggybank</p>
+      <Button className="bg-foreground text-background px-4 py-2 rounded-md">
+      Sign in
+        </Button>
+        </SignInButton>
+        <SignUpButton mode="modal">
         <button className="bg-foreground text-background px-4 py-2 rounded-md">
-          Sign up
+        Sign up
         </button>
-      </SignUpButton>
-    </div>
+        </SignUpButton>
+        
+        </div>
+        </div>
+        */
   );
 }
 
 function Content() {
   const { viewer, numbers } =
     useQuery(api.myFunctions.listNumbers, {
-      count: 10,
+      count: 5,
     }) ?? {};
   const addNumber = useMutation(api.myFunctions.addNumber);
 
