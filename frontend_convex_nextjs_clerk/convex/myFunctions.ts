@@ -5,6 +5,15 @@ import { api } from "./_generated/api";
 // Write your Convex functions in any file inside this directory (`convex`).
 // See https://docs.convex.dev/functions for more.
 
+export const netValue = query({
+  handler: async (ctx) => {
+    const netValue = await ctx.db
+      .query("nettoarvo")
+      .take(1);
+    return netValue;
+  },
+});
+
 // You can read data from the database via a query:
 export const listNumbers = query({
   // Validators for arguments.

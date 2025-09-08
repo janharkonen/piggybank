@@ -140,6 +140,7 @@ function Content() {
     useQuery(api.myFunctions.listNumbers, {
       count: 5,
     }) ?? {};
+  const netValue = useQuery(api.myFunctions.netValue);
   const addNumber = useMutation(api.myFunctions.addNumber);
 
   if (viewer === undefined || numbers === undefined) {
@@ -153,6 +154,7 @@ function Content() {
   return (
     <div className="flex flex-col gap-8 max-w-lg mx-auto">
       <p>Welcome {viewer ?? "Anonymous"}!</p>
+      <p>Nettoarvo: {netValue?.[0]?.value}</p>
       <p>
         Click the button below and open this page in another window - this data
         is persisted in the Convex cloud database!

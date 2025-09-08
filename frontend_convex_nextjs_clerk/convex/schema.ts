@@ -9,4 +9,7 @@ export default defineSchema({
   numbers: defineTable({
     value: v.number(),
   }),
+  nettoarvo: defineTable({
+    value: v.number(),
+  })
 });
