@@ -7,7 +7,6 @@ import {
   useQuery,
 } from "convex/react";
 import { api } from "../convex/_generated/api";
-import Link from "next/link";
 import { SignUpButton } from "@clerk/nextjs";
 import { SignInButton } from "@clerk/nextjs";
 import { UserButton } from "@clerk/nextjs";
@@ -137,24 +136,11 @@ function SignInForm() {
 }
 
 function Content() {
-  const { viewer, numbers } =
-    useQuery(api.myFunctions.listNumbers, {
-      count: 5,
-    }) ?? {};
-  const netValue = useQuery(api.myFunctions.netValue);
-  const addNumber = useMutation(api.myFunctions.addNumber);
 
-  if (viewer === undefined || numbers === undefined) {
-    return (
-      <div className="mx-auto">
-        <p>loading... (consider a loading skeleton)</p>
-      </div>
-    );
-  }
 
   return (
     <div className="flex flex-col gap-8 w-full max-w-5xl mx-auto">
-      <Nettoarvo viewer={viewer ?? "Anonymous"} netValue={netValue?.[0]?.value ?? 0} />
+      <Nettoarvo />
     </div>
   );
 }
