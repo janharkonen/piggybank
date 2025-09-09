@@ -25,13 +25,16 @@ export const listNumbers = query({
   handler: async (ctx, args) => {
     //// Read the database as many times as you need here.
     //// See https://docs.convex.dev/database/reading-data.
+    console.log("--------------------------------------")
+    const identity = await ctx.auth.getUserIdentity()
+    console.log(identity)
     const numbers = await ctx.db
       .query("numbers")
       // Ordered by _creationTime, return most recent
       .order("desc")
       .take(args.count);
     return {
-      viewer: (await ctx.auth.getUserIdentity())?.name ?? null,
+      viewer: (await ctx.auth.getUserIdentity())?.email ?? null,
       numbers: numbers.reverse().map((number) => number.value),
     };
   },
