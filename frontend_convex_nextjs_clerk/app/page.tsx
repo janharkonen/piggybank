@@ -3,10 +3,7 @@
 import {
   Authenticated,
   Unauthenticated,
-  useMutation,
-  useQuery,
 } from "convex/react";
-import { api } from "../convex/_generated/api";
 import { SignUpButton } from "@clerk/nextjs";
 import { SignInButton } from "@clerk/nextjs";
 import { UserButton } from "@clerk/nextjs";
@@ -14,6 +11,7 @@ import DarkModeToggle from "@/components/Header/DarkModeToggle";
 import { Card, CardHeader, CardTitle, CardFooter, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Nettoarvo from "@/components/dashboard/nettoarvo";
+import PopulateModal from "@/components/dashboard/populate_modal";
 
 export default function Home() {
   return (
@@ -94,70 +92,15 @@ function SignInForm() {
       </SignInButton>
     </CardFooter>
   </Card>
-    /*
-    <div className="
-    w-full
-    max-w-4xl
-    mx-auto
-    shadow-2xl
-    border-2
-    border-mint-200
-    flex 
-    flex-col 
-    rounded-xl 
-    "
-    style={{ background: 'var(--foreground)' }}
-    >
-    <div className="logo-div h-full flex flex-col items-center justify-center"> 
-    <img 
-    src="https://picapi.janharkonen.fi/api/pics/224ad3d792204463bf57ae0eda3bebde.png?BG=92"
-      alt="Piggybank Logo"
-      style={{aspectRatio: 1 / 1, filter: "invert(0)"}}
-      className="logo-img opacity-75 max-h-60 aspect-square"
-
-      />
-      <p className="font-bold text-3xl sm:text-5xl p-4">Piggybank</p>
-      <Button className="bg-foreground text-background px-4 py-2 rounded-md">
-      Sign in
-        </Button>
-        </SignInButton>
-        <SignUpButton mode="modal">
-        <button className="bg-foreground text-background px-4 py-2 rounded-md">
-        Sign up
-        </button>
-        </SignUpButton>
-        
-        </div>
-        </div>
-        */
   );
 }
 
 function Content() {
 
-
   return (
     <div className="flex flex-col gap-8 w-full max-w-5xl mx-auto">
       <Nettoarvo />
-    </div>
-  );
-}
-
-function ResourceCard({
-  title,
-  description,
-  href,
-}: {
-  title: string;
-  description: string;
-  href: string;
-}) {
-  return (
-    <div className="flex flex-col gap-2 bg-slate-200 dark:bg-slate-800 p-4 rounded-md h-28 overflow-auto">
-      <a href={href} className="text-sm underline hover:no-underline">
-        {title}
-      </a>
-      <p className="text-xs">{description}</p>
+      <PopulateModal />
     </div>
   );
 }

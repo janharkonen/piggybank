@@ -88,3 +88,11 @@ export const myAction = action({
     });
   },
 });
+
+export const populateSaldo = action({
+  handler: async (ctx) => {
+    console.log("inside action populateSaldo");
+    
+    
+  },
+})
