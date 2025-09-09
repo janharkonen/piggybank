@@ -6,8 +6,8 @@
   --header-background: theme('colors.slate.100');
   --header-border: theme('colors.slate.300');
   --radius: 0.625rem;
-  --background: theme('colors.mint.400');
-  --foreground: theme('colors.mint.500');
+  --background: theme('colors.mint.100');
+  --foreground: theme('colors.mint.400');
   --card: theme('colors.mint.200');
   --card-foreground: theme('colors.mint.900');
   --popover: oklch(1 0 0);
@@ -22,7 +22,7 @@
   --accent-foreground: oklch(0.208 0.042 265.755);
   --destructive: oklch(0.577 0.245 27.325);
   --border: theme('colors.mint.100');
-  --input: oklch(0.929 0.013 255.508);
+  --input: theme('colors.mint.50');
   --ring: oklch(0.704 0.04 256.788);
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
@@ -43,8 +43,8 @@
   --foreground: oklch(0.984 0.003 247.858);
   --header-background: theme('colors.slate.700');
   --header-border: theme('colors.slate.300');
-  --card: oklch(0.208 0.042 265.755);
-  --card-foreground: oklch(0.984 0.003 247.858);
+  --card: theme('colors.slate.700');
+  --card-foreground: theme('colors.slate.200');
   --popover: oklch(0.208 0.042 265.755);
   --popover-foreground: oklch(0.984 0.003 247.858);
   --primary: oklch(0.929 0.013 255.508);
@@ -114,6 +114,7 @@
   --radius-xl: calc(var(--radius) + 4px);
 }
 @theme {
+  --color-mint-50: oklch(0.975 0.025 178);
   --color-mint-100: oklch(0.95 0.05 178);
   --color-mint-200: oklch(0.85 0.08 178);
   --color-mint-300: oklch(0.78 0.10 178);
