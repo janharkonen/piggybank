@@ -6,8 +6,8 @@
   --header-background: theme('colors.slate.100');
   --header-border: theme('colors.slate.300');
   --radius: 0.625rem;
-  --background: theme('colors.mint.400');
-  --foreground: theme('colors.mint.500');
+  --background: theme('colors.mint.100');
+  --foreground: theme('colors.mint.400');
   --card: theme('colors.mint.200');
   --card-foreground: theme('colors.mint.900');
   --popover: oklch(1 0 0);
@@ -43,8 +43,8 @@
   --foreground: oklch(0.984 0.003 247.858);
   --header-background: theme('colors.slate.700');
   --header-border: theme('colors.slate.300');
-  --card: oklch(0.208 0.042 265.755);
-  --card-foreground: oklch(0.984 0.003 247.858);
+  --card: theme('colors.slate.700');
+  --card-foreground: theme('colors.slate.200');
   --popover: oklch(0.208 0.042 265.755);
   --popover-foreground: oklch(0.984 0.003 247.858);
   --primary: oklch(0.929 0.013 255.508);

@@ -50,11 +50,9 @@ function Header() {
     top-0 
     z-10 
     p-2 
+    bg-[var(--header-background)] 
+    border-b-[var(--header-border)]
     border-b-2 
-    bg-slate-100
-    border-slate-300 
-    dark:bg-slate-700
-    dark:border-slate-600 
     flex 
     flex-row 
     gap-2
