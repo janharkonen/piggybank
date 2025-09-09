@@ -11,5 +11,14 @@ export default defineSchema({
   }),
   nettoarvo: defineTable({
     value: v.number(),
+  }),
+  kuukausi_saldo: defineTable({
+    kategoria: v.string(),
+    kuka: v.string(),
+    palvelu: v.string(),
+    mita: v.string(),
+    aikaleima: v.string(),
+    erittely: v.string(),
+    saldo: v.number(),
   })
 });

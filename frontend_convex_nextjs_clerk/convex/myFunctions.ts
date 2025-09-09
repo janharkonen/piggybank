@@ -89,9 +89,110 @@ export const myAction = action({
   },
 });
 
+type KuukausiSaldoRow ={
+  kategoria: string;
+  kuka: string;
+  palvelu: string;
+  mita: string;
+  aikaleima: string;
+  erittely: string;
+  saldo: number;
+}
+
+async function getFromGoogleDocs(userid: string) {
+  const gvizUrl = process.env.CONVEX_POPULATE_URL1 as string;
+  console.log("gvizUrl", gvizUrl);
+  const response = await fetch(gvizUrl);
+  const txt = await response.text();
+  const json = JSON.parse(txt.match(/setResponse\((.*)\)/)?.[1] ?? '');
+  const table = json.table;
+  //console.log("table", table);
+  const rows = table.rows.map((row: any) => row.c.map((cell: any) => cell?.v ?? null));
+  const columns = table.cols.map((col: any) => col.label);
+ 
+  var kuukausiSaldoRow: KuukausiSaldoRow = {
+    kategoria: "",
+    kuka: "",
+    palvelu: "",
+    mita: "",
+    aikaleima: "",
+    erittely: "",
+    saldo: 0,
+  };
+
+
+  var kuukausiSaldoRows: KuukausiSaldoRow[] = [];
+  kuukausiSaldoRow.kategoria = "Sijoitukset";
+  kuukausiSaldoRow.kuka = userid;
+  kuukausiSaldoRow.erittely = "";
+  rows.slice(0, 1).forEach((row: any, rowIndex: number) => {
+    kuukausiSaldoRow.palvelu = row[0];
+    kuukausiSaldoRow.mita = row[1];
+    console.log("tassa: ", columns)
+    columns.forEach((value: any, colIndex: number) => {
+      if (colIndex > 2) {
+        //console.log("column index: ", colIndex)
+        //console.log("column value: ", value)
+        //console.log('value type:', typeof value)
+        kuukausiSaldoRow.aikaleima = (value as string).trim();
+        kuukausiSaldoRow.saldo = parseFloat(row[colIndex] as string);
+        kuukausiSaldoRows = [...kuukausiSaldoRows, {...kuukausiSaldoRow}];
+      }
+    });
+  });
+
+  return kuukausiSaldoRows;
+};
+
+export const insertKuukausiSaldo = mutation({
+  args: {
+    row: v.object({
+      kategoria: v.string(),
+      kuka: v.string(),
+      palvelu: v.string(),
+      mita: v.string(),
+      aikaleima: v.string(),
+      erittely: v.string(),
+      saldo: v.number(),
+    }),
+  },
+
+  handler: async (ctx, args) => {
+    await ctx.db.insert("kuukausi_saldo", args.row);
+  },
+});
+
+export const insertKuukausiSaldoArray = mutation({
+  args: {
+    rows: v.array(v.object({
+      kategoria: v.string(),
+      kuka: v.string(),
+      palvelu: v.string(),
+      mita: v.string(),
+      aikaleima: v.string(),
+      erittely: v.string(),
+      saldo: v.number(),
+    })),
+  },
+
+  handler: async (ctx, args) => {
+    args.rows.forEach(async (row: KuukausiSaldoRow) => {
+      await ctx.runMutation(api.myFunctions.insertKuukausiSaldo, {
+        row: row,
+      });
+    });
+  },
+});
+
 export const populateSaldo = action({
   handler: async (ctx) => {
-    console.log("inside action populateSaldo");
+    const user = await ctx.auth.getUserIdentity();
+    console.log("user", user);
+    const userid = (user?.tokenIdentifier ?? "").split("|")[1];
+    const data = await getFromGoogleDocs(userid);
+    await ctx.runMutation(api.myFunctions.insertKuukausiSaldoArray, {
+      rows: data,
+    });
     
     
   },
