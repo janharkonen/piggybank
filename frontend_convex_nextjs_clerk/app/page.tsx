@@ -8,7 +8,7 @@ import { SignUpButton } from "@clerk/nextjs";
 import { SignInButton } from "@clerk/nextjs";
 import { UserButton } from "@clerk/nextjs";
 import DarkModeToggle from "@/components/Header/DarkModeToggle";
-import { Card, CardHeader, CardTitle, CardFooter, CardContent } from "@/components/ui/card";
+import { Card, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Nettoarvo from "@/components/dashboard/nettoarvo";
 import PopulateModal from "@/components/dashboard/populate_modal";
